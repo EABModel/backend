@@ -5,6 +5,8 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from dotenv import load_dotenv
 from flask_caching import Cache
+from flask_cors import CORS
+from flask_uuid import FlaskUUID
 import os
 
 # Load environmet variables
@@ -13,6 +15,7 @@ load_dotenv('./env')
 # Create app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+FlaskUUID(app)
 
 
 
@@ -45,5 +48,7 @@ mail = Mail(app)
 # Others
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+
+# CORS(app, resources={r"/*": {"origins": "*"}})
 
 from my_app import routes

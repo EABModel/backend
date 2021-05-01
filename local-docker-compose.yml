@@ -13,8 +13,6 @@ services:
     build: .
     container_name: my_app_flask
     restart: always
-    volumes:
-      - .:/usr/app/
     ports:
       - "5000:5000"
     command:
@@ -24,6 +22,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - ./:/usr/src/app
   nginx:
     image: nginx:mainline-alpine
     container_name: my_app_nginx
