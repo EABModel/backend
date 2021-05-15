@@ -23,15 +23,13 @@ FlaskUUID(app)
 # Database config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
 db = SQLAlchemy(app)
-if db:
-    print('DB IS READY!!!\n')
 
 #_______________________________________________________________________________
 # Cache config
 cache = Cache(app, config={'CACHE_TYPE': 'redis',
                            'CACHE_REDIS_URL': 'redis://redis:6379/0'})
-if cache:
-    print('CACHE IS READY!!!\n')
+if db and cache:
+    print('Conection to database and cache established successfully...')
 
 #_______________________________________________________________________________
 # Mail config
@@ -51,4 +49,4 @@ login_manager = LoginManager(app)
 
 # CORS(app, resources={r"/*": {"origins": "*"}})
 
-from my_app import routes
+from .routes import *
