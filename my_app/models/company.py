@@ -18,7 +18,7 @@ class Company(db.Model):
 
     @staticmethod
     def load_company_by_name(name):
-        return Company.query.filter_by(name=str(name)).first().serialize()
+        return Company.query.filter_by(name=str(name)).first()
 
     def __repr__(self):
         return f"Company('{self.id}', '{self.name}')"
