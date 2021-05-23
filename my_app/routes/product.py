@@ -22,3 +22,9 @@ def create_product():
     db.session.commit()
     product = Product.load_product(str(id))
     return make_response(jsonify(product), 201)
+
+@app.route('/catalogue/<id>', methods=['GET'])
+@cache.cached(timeout=50)
+def get_catalog(id):
+    products = Product.load_shops_products(id)
+    return make_response(jsonify(products), 200)
