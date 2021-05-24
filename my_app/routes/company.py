@@ -10,18 +10,19 @@ import uuid
 @cache.cached(timeout=50)
 def create_company():
     # Create Company Admin
+    admin_id = uuid.uuid4()
     hashed_password = bcrypt.generate_password_hash(request.json['password'].encode('utf-8'))
     user = User(
-        id=uuid.uuid4(),
+        id=admin_id,
         username=f"Admin {request.json['name']}",
         email=request.json['email'],
         password=hashed_password,
         sessionType='ADMINISTRATOR'
     )
     # Create Company
-    id = uuid.uuid4()
+    company_id = uuid.uuid4()
     company = Company(
-        id=id,
+        id=company_id,
         name=request.json['name'],
         email=request.json['email'],
         password=hashed_password,
@@ -29,7 +30,7 @@ def create_company():
     db.session.add(user)
     db.session.add(company)
     db.session.commit()
-    company = Company.load_company(id)
+    company = Company.load_company(company_id)
     return make_response(jsonify(company), 201)
 
 @app.route('/company/login', methods=['POST'])
