@@ -2,7 +2,10 @@ from my_app.models import shop
 from my_app import app, db, cache
 from flask import jsonify, request, make_response
 from ..models.product import Product
+from ..utils.errors import ClientError
 import uuid
+
+from my_app.utils import errors
 
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
@@ -36,13 +39,23 @@ def get_catalogue():
 
 @app.route('/catalogue/product', methods=['GET'])
 def get_product():
-    product = Product.query.get(str(request.args.get('productId')))
-    if product:
-        return make_response(jsonify(product.serialize()))
-    return {}
+    try:
+        if not request.args.get('productId'):
+            raise ClientError('productId is a required field')
+        product = Product.query.get(str(request.args.get('productId')))
+        if product:
+            return make_response(jsonify(product.serialize()))
+        return {}
+    except ClientError as error:
+        return jsonify(error.to_dict())
 
 
 @app.route('/catalogue/shop', methods=['GET'])
 def get_shop_catalogue():
-    products = Product.load_shops_products(request.args.get('shopId'))
-    return make_response(jsonify(products))
+    try:
+        if not request.args.get('productId'):
+            raise ClientError('shopId is a required field')
+        products = Product.load_shops_products(request.args.get('shopId'))
+        return make_response(jsonify(products))
+    except ClientError as error:
+        return jsonify(error.to_dict())
