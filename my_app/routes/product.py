@@ -53,7 +53,7 @@ def get_product():
 @app.route('/catalogue/shop', methods=['GET'])
 def get_shop_catalogue():
     try:
-        if not request.args.get('productId'):
+        if not request.args.get('shopId'):
             raise ClientError('shopId is a required field')
         products = Product.load_shops_products(request.args.get('shopId'))
         return make_response(jsonify(products))
