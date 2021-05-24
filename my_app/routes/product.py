@@ -5,8 +5,6 @@ from ..models.product import Product
 from ..utils.errors import ClientError
 import uuid
 
-from my_app.utils import errors
-
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
 @cache.cached(timeout=50)
@@ -37,25 +35,15 @@ def get_catalogue():
     return make_response(jsonify(serialized_products))
 
 
-@app.route('/catalogue/product', methods=['GET'])
-def get_product():
-    try:
-        if not request.args.get('productId'):
-            raise ClientError('productId is a required field')
-        product = Product.query.get(str(request.args.get('productId')))
-        if product:
-            return make_response(jsonify(product.serialize()))
-        return {}
-    except ClientError as error:
-        return jsonify(error.to_dict())
+@app.route('/catalogue/<productId>', methods=['GET'])
+@cache.cached(timeout=50)
+def get_product(productId):
+    product = Product.load_product(productId)
+    return make_response(jsonify(product), 200)
 
 
-@app.route('/catalogue/shop', methods=['GET'])
-def get_shop_catalogue():
-    try:
-        if not request.args.get('shopId'):
-            raise ClientError('shopId is a required field')
-        products = Product.load_shops_products(request.args.get('shopId'))
-        return make_response(jsonify(products))
-    except ClientError as error:
-        return jsonify(error.to_dict())
+@app.route('/catalogue/shop/<shopId>', methods=['GET'])
+@cache.cached(timeout=50)
+def get_catalog(shopId):
+    products = Product.load_shops_products(shopId)
+    return make_response(jsonify(products), 200)
