@@ -25,6 +25,26 @@ def create_product():
     product = Product.load_product(str(id))
     return make_response(jsonify(product), 201)
 
+@app.route('/catalogue/add-many-products', methods=['POST'])
+@cache.cached(timeout=50)
+def create_products():
+    products = []
+    for row in request.json:
+        id = uuid.uuid4()
+        product = Product(
+            id=id,
+            shopId=row['shopId'],
+            name=row['name'],
+            brand=row['brand'],
+            os=row['os'],
+            color=row['color'],
+            inches=row['inches'],
+            price=row['price']
+        )
+        products.append(product)
+        db.session.add_all(products)
+        db.session.commit()
+    return make_response(jsonify({}), 201)
 
 @app.route('/catalogue', methods=['GET'])
 @cache.cached(timeout=50)
