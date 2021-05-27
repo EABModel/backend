@@ -7,7 +7,6 @@ import uuid
 
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
-@cache.cached(timeout=50)
 def create_product():
     id = uuid.uuid4()
     product = Product(
@@ -26,7 +25,6 @@ def create_product():
     return make_response(jsonify(product), 201)
 
 @app.route('/catalogue/add-many-products', methods=['POST'])
-@cache.cached(timeout=50)
 def create_products():
     products = []
     for row in request.json:
@@ -63,7 +61,6 @@ def get_product(productId):
 
 
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
-@cache.cached(timeout=50)
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
     return make_response(jsonify(products), 200)
