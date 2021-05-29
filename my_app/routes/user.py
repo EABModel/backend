@@ -28,7 +28,7 @@ def create_user():
         db.session.add(user)
         db.session.commit()
         user = User.load_user(str(id))
-        refresh_token, token = generate_tokens(user.id)
+        refresh_token, token = generate_tokens(user["id"])
         return make_response(jsonify({'user': user, 'refresh_token': refresh_token, 'token': token}), 201)
         # return make_response(jsonify(user), 201)
     except Exception as err:

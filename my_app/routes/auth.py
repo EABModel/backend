@@ -15,7 +15,7 @@ def submit_auth():
         # check_password = bcrypt.check_password_hash(data["password"], request.json["password"].encode('utf-8'))
         # if not check_password:
         #     raise Exception("Password is incorrect")
-        refresh_token, token = generate_tokens(user.id)
+        refresh_token, token = generate_tokens(user["id"])
         return make_response(jsonify({'user': user, 'refresh_token': refresh_token, 'token': token}), 201)
     except Exception as error:
         data = error.__repr__()

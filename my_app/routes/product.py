@@ -1,6 +1,6 @@
 from my_app.models import shop
 from my_app import app, db, cache
-from flask import jsonify, request, make_response, session
+from flask import jsonify, request, make_response, session, g
 from ..models.product import Product
 from ..utils.auth import login_required
 from ..utils.errors import ClientError
@@ -8,6 +8,7 @@ import uuid
 
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
+@login_required
 @cache.cached(timeout=50)
 def create_product():
     id = uuid.uuid4()
@@ -28,6 +29,7 @@ def create_product():
 
 
 @app.route('/catalogue/add-many-products', methods=['POST'])
+@login_required
 @cache.cached(timeout=50)
 def create_products():
     products = []
@@ -51,7 +53,7 @@ def create_products():
 
 @app.route('/catalogue', methods=['GET'])
 @login_required
-# @cache.cached(timeout=50)
+@cache.cached(timeout=50)
 def get_catalogue():
     unserialized_products = Product.query.all()
     serialized_products = [product.serialize()
@@ -67,6 +69,7 @@ def get_product(productId):
 
 
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
+@login_required
 @cache.cached(timeout=50)
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
