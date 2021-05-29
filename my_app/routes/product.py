@@ -53,11 +53,27 @@ def get_catalogue():
     return make_response(jsonify(serialized_products))
 
 
-@app.route('/catalogue/<productId>', methods=['GET'])
+@app.route('/catalogue/<productId>', methods=['GET', 'PUT'])
 @cache.cached(timeout=50)
 def get_product(productId):
-    product = Product.load_product(productId)
-    return make_response(jsonify(product), 200)
+    if request.method == 'GET':
+        product = Product.load_product(productId)
+        return make_response(jsonify(product), 200)
+
+    if request.method == 'PUT':
+        product = Product.query.get(productId)
+
+        if request.json['name']:   product.name =  request.json['name']
+        if request.json['brand']:  product.brand = request.json['brand']
+        if request.json['os']:     product.os = request.json['os']
+        if request.json['color']:  product.color = request.json['color']
+        if request.json['inches']: product.inches = request.json['inches']
+        if request.json['price']:  product.price = request.json['price']
+        
+        db.session.commit()
+        product = Product.load_product(productId)
+    
+        return make_response(jsonify({'product': product}), 200)
 
 
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
