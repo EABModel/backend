@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
@@ -17,21 +18,25 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 FlaskUUID(app)
 
+# app.config.update(
+#     SESSION_COOKIE_HTTPONLY=True,
+#     REMEMBER_COOKIE_HTTPONLY=True,
+#     SESSION_COOKIE_SAMESITE="Lax",
+# )
 
-
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Database config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
 db = SQLAlchemy(app)
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Cache config
 cache = Cache(app, config={'CACHE_TYPE': 'redis',
                            'CACHE_REDIS_URL': 'redis://redis:6379/0'})
 if db and cache:
     print('Conection to database and cache established successfully...')
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Mail config
 
 # app.config['MAIL_SERVER']= os.getenv("MAIL_SERVER")
@@ -42,11 +47,18 @@ if db and cache:
 # app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL")
 mail = Mail(app)
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Others
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+salt = Fernet.generate_key()
+fernet = Fernet(salt)
 
-# CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(
+#     app,
+#     resources={r"/*": {"origins": "*"}},
+#     expose_headers=["Content-Type", "X-CSRFToken"],
+#     supports_credentials=True,
+# )
 
-from .routes import *
+from .routes import *  # nopep8
