@@ -31,7 +31,7 @@ def create_products():
         id = uuid.uuid4()
         product = Product(
             id=id,
-            shopId=row['shopId'],
+            employeeId=row['employeeId'],
             name=row['name'],
             brand=row['brand'],
             os=row['os'],
