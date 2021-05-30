@@ -5,7 +5,6 @@ import uuid
 
 
 @app.route('/shop/create', methods=['POST'])
-@cache.cached(timeout=50)
 def create_shop():
     id = uuid.uuid4()
     shop = Shop(

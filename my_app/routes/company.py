@@ -7,7 +7,6 @@ import uuid
 
 
 @app.route('/company/create', methods=['POST'])
-@cache.cached(timeout=50)
 def create_company():
     # Create Company Admin
     admin_id = uuid.uuid4()
@@ -34,7 +33,6 @@ def create_company():
     return make_response(jsonify(company), 201)
 
 @app.route('/company/login', methods=['POST'])
-@cache.cached(timeout=50)
 def login_company():
     status = 200
     data = []
