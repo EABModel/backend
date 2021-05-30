@@ -72,7 +72,7 @@ def get_product(productId):
         
         db.session.commit()
     
-        return make_response(jsonify({'product': product}), 200)
+        return make_response(jsonify(product.serialize()), 200)
 
 
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
