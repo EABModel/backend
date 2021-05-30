@@ -84,7 +84,7 @@ def admin_required(func):
             decoded_token = jwt.decode(
                 token, app.config['SECRET_KEY'], algorithms="HS256")
             user = User.load_user(decoded_token["user_id"])
-            if user and user.sessionType == 'ADMIN':
+            if user and user.sessionType == 'ADMINISTRATOR':
                 app.logger.info("if user")
                 current_user(user)
                 return func(*args, **kwargs)
