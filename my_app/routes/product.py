@@ -71,7 +71,6 @@ def get_product(productId):
         if request.json['price']:  product.price = request.json['price']
         
         db.session.commit()
-        product = Product.load_product(productId)
     
         return make_response(jsonify({'product': product}), 200)
 
