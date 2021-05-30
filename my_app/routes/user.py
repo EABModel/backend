@@ -6,13 +6,11 @@ import uuid
 
 
 @app.route('/user', methods=['GET'])
-@cache.cached(timeout=50)
 def get_user():
     return make_response(jsonify('Hola'), 200)
 
 
 @app.route('/user/create', methods=['POST'])
-@cache.cached(timeout=50)
 def create_user():
     try:
         id = uuid.uuid4()

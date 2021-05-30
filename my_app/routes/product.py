@@ -60,7 +60,6 @@ def get_catalogue():
 
 
 @app.route('/catalogue/<productId>', methods=['GET'])
-@cache.cached(timeout=50)
 def get_product(productId):
     product = Product.load_product(productId)
     return make_response(jsonify(product), 200)
