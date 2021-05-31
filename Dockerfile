@@ -16,3 +16,5 @@ COPY . .
 
 # Development (comment production lines and uncomment development lines)
 RUN export FLASK_APP=run.py
+
+CMD ["flask", "run"]
