@@ -18,20 +18,19 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 FlaskUUID(app)
 
 
-
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Database config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
 db = SQLAlchemy(app)
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Cache config
 cache = Cache(app, config={'CACHE_TYPE': 'redis',
                            'CACHE_REDIS_URL': 'redis://redis:6379/0'})
 if db and cache:
     print('Conection to database and cache established successfully...')
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Mail config
 
 # app.config['MAIL_SERVER']= os.getenv("MAIL_SERVER")
@@ -42,11 +41,11 @@ if db and cache:
 # app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL")
 mail = Mail(app)
 
-#_______________________________________________________________________________
+# _______________________________________________________________________________
 # Others
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-# CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}},)
 
-from .routes import *
+from .routes import *  # nopep8
