@@ -71,3 +71,10 @@ def get_product(productId):
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
     return make_response(jsonify(products), 200)
+
+@app.route('/catalogue/delete-product/<productId>', methods=['DELETE'])
+def delete_product(productId):
+    product = Product.query.get(productId)
+    db.session.delete(product)
+    db.session.commit()
+    return make_response(jsonify(product.serialize()), 200)
