@@ -45,7 +45,6 @@ def create_products():
     return make_response(jsonify({}), 201)
 
 @app.route('/catalogue', methods=['GET'])
-@cache.cached(timeout=50)
 def get_catalogue():
     unserialized_products = Product.query.all()
     serialized_products = [product.serialize()
@@ -54,7 +53,6 @@ def get_catalogue():
 
 
 @app.route('/catalogue/<productId>', methods=['GET'])
-@cache.cached(timeout=50)
 def get_product(productId):
     product = Product.load_product(productId)
     return make_response(jsonify(product), 200)
@@ -64,3 +62,10 @@ def get_product(productId):
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
     return make_response(jsonify(products), 200)
+
+@app.route('/catalogue/delete-product/<productId>', methods=['DELETE'])
+def delete_product(productId):
+    product = Product.query.get(productId)
+    db.session.delete(product)
+    db.session.commit()
+    return make_response(jsonify(product.serialize()), 200)
