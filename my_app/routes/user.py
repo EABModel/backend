@@ -32,9 +32,9 @@ def submit_auth():
         """
         TODO: Tira invalid salt todo el rato
         """
-        # check_password = bcrypt.check_password_hash(data["password"], request.json["password"].encode('utf-8'))
-        # if not check_password:
-        #     raise Exception("Password is incorrect")
+        check_password = bcrypt.check_password_hash(data.password, request.json["password"].encode('utf-8'))
+        if not check_password:
+            raise Exception("Password is incorrect")
     except Exception as error:
         status = 400
         data = error.__repr__()
