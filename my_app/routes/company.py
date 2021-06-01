@@ -10,7 +10,7 @@ import uuid
 def create_company():
     # Create Company Admin
     admin_id = uuid.uuid4()
-    hashed_password = bcrypt.generate_password_hash(request.json['password'].encode('utf-8'))
+    hashed_password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
     user = User(
         id=admin_id,
         username=f"Admin {request.json['name']}",
