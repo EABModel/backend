@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     @staticmethod
     @login_manager.user_loader
     def load_user_by_email(email):
-        return User.query.filter_by(email=str(email)).first().serialize()
+        return User.query.filter_by(email=str(email)).first()
 
     def __repr__(self):
         return f"User('{self.id}', '{self.username}', '{self.email}')"
