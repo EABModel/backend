@@ -2,6 +2,9 @@
 
 > by [Charlie Jouanne](https://github.com/cjjouanne)
 
+## Test the API with postman
+[![run in postman](https://run.pstmn.io/button.svg)](https://www.getpostman.com/collections/a26435de0ec000b9b754)
+
 ## Prerequisites 🐳
 
 * `Docker`
