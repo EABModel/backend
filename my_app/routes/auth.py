@@ -9,12 +9,13 @@ def submit_auth():
     status = 200
     try:
         user = User.load_user_by_email(request.json['email'])
-        """
-        TODO: Tira invalid salt todo el rato
-        """
-        # check_password = bcrypt.check_password_hash(data["password"], request.json["password"].encode('utf-8'))
-        # if not check_password:
-        #     raise Exception("Password is incorrect")
+
+        check_password = bcrypt.check_password_hash(
+            user.password, request.json["password"])
+        if not check_password:
+            raise Exception("Password is incorrect")
+
+        user = user.serialize()
         refresh_token, token = generate_tokens(user["id"])
         return make_response(jsonify({'user': user, 'refresh_token': refresh_token, 'token': token}), 201)
     except Exception as error:
