@@ -2,8 +2,10 @@ from my_app import db
 
 
 class Product(db.Model):
+    __tablename__ = 'product'
+
     id = db.Column(db.String(150), primary_key=True)
-    shopId = db.Column(db.String(150), nullable=False)
+    shopId = db.Column(db.String(150), db.ForeignKey('shop.id'), nullable=False)
     name = db.Column(db.String(40), nullable=False)
     brand = db.Column(db.String(80), nullable=False)
     os = db.Column(db.String(300), nullable=False)
@@ -34,6 +36,3 @@ class Product(db.Model):
 
     def __repr__(self):
         return f"Product('{self.id}', '{self.name}', '{self.brand}')"
-
-
-db.create_all()

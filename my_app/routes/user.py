@@ -20,6 +20,8 @@ def create_user():
             id=id,
             username=request.json['username'],
             email=request.json['email'],
+            companyId=request.json['companyId'],
+            shopId=request.json['shopId'],
             password=hashed_password,
             sessionType='EMPLOYEE'
         )
@@ -32,3 +34,21 @@ def create_user():
     except Exception as err:
         app.logger.info('Err', err)
         raise err
+
+@app.route('/user/set_shop', methods=['PATCH'])
+def set_shop_id():
+    try:
+        user = User.query.filter_by(id=request.json['userId']).first()
+        user.shopId = request.json['shopId']
+        db.session.commit()
+        return make_response(jsonify(user.serialize()), 202)
+    except Exception as err:
+        app.logger.info('Err', err)
+        raise err
+
+@app.route('/user/<userId>', methods=['DELETE'])
+def delete_user(userId):
+    user = User.query.filter_by(id=userId).first()
+    db.session.delete(user)
+    db.session.commit()
+    return make_response('User has been deleted', 202)
