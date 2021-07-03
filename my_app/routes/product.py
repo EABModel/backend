@@ -50,7 +50,6 @@ def create_products():
 
 
 @app.route('/catalogue', methods=['GET'])
-@login_required
 @cache.cached(timeout=50)
 def get_catalogue():
     unserialized_products = Product.query.all()
@@ -66,7 +65,6 @@ def get_product(productId):
 
 
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
-@login_required
 @cache.cached(timeout=50)
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
