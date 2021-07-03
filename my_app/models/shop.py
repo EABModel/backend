@@ -2,10 +2,13 @@ from my_app import db
 
 
 class Shop(db.Model):
+    __tablename__ = 'shop'
+
     id = db.Column(db.String(150), primary_key=True)
-    companyId = db.Column(db.String(150), nullable=False)
+    companyId = db.Column(db.String(150), db.ForeignKey('company.id'), nullable=False)
     name = db.Column(db.String(40), nullable=False)
     location = db.Column(db.String(100), nullable=False)
+    users = db.relationship('User', backref='shop', lazy=True)
 
     def serialize(self):
         return {
@@ -26,6 +29,3 @@ class Shop(db.Model):
 
     def __repr__(self):
         return f"Shop('{self.id}', '{self.name}', '{self.location}')"
-
-
-db.create_all()

@@ -8,23 +8,24 @@ import uuid
 
 @app.route('/company/create', methods=['POST'])
 def create_company():
-    # Create Company Admin
-    admin_id = uuid.uuid4()
-    hashed_password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
-    user = User(
-        id=admin_id,
-        username=f"Admin {request.json['name']}",
-        email=request.json['email'],
-        password=hashed_password,
-        sessionType='ADMINISTRATOR'
-    )
     # Create Company
     company_id = uuid.uuid4()
+    hashed_password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
     company = Company(
         id=company_id,
         name=request.json['name'],
         email=request.json['email'],
         password=hashed_password,
+    )
+    # Create Company Admin
+    admin_id = uuid.uuid4()
+    user = User(
+        id=admin_id,
+        username=f"Admin {request.json['name']}",
+        email=request.json['email'],
+        password=hashed_password,
+        sessionType='ADMINISTRATOR',
+        companyId=company_id,
     )
     db.session.add(user)
     db.session.add(company)
@@ -38,9 +39,7 @@ def login_company():
     data = []
     try:
         company = Company.load_company_by_name(request.json['name'])
-        """TODO: Tira invalid salt todo el rato"""
-        check_password = True
-        # check_password = bcrypt.check_password_hash(data["password"], request.json["password"].encode('utf-8'))
+        check_password = bcrypt.check_password_hash(company.password, request.json["password"])
         if not check_password:
             return Response('Password is incorrect', status=403)
         if not company:
@@ -56,3 +55,15 @@ def login_company():
     except Exception as error:
         status = 400
         return Response(error.__repr__(), status=status)
+
+@app.route('/company/<companyId>/shops', methods=['GET'])
+def get_company(companyId):
+    company = Company.query.filter_by(id=companyId).first()
+    shops = company.shops
+    return make_response(jsonify({ 'shops': [i.serialize() for i in shops] }))
+
+@app.route('/company/<companyId>/users', methods=['GET'])
+def get_users(companyId):
+    company = Company.query.filter_by(id=companyId).first()
+    users = company.users
+    return make_response(jsonify({ 'users': [i.serialize() for i in users] }))
