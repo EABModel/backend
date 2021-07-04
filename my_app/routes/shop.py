@@ -15,5 +15,5 @@ def create_shop():
     )
     db.session.add(shop)
     db.session.commit()
-    # Returns an empty object to avoid changing shop state in frontend state
-    return make_response(jsonify({}), 201)
+    shop = Shop.load_shop(id)
+    return make_response(jsonify(shop), 201)
