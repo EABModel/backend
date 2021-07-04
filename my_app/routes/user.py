@@ -14,8 +14,7 @@ def get_user():
 def create_user():
     try:
         id = uuid.uuid4()
-        hashed_password = bcrypt.generate_password_hash(
-            request.json['password'].encode('utf-8'))
+        hashed_password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
         user = User(
             id=id,
             username=request.json['username'],
@@ -28,8 +27,7 @@ def create_user():
         db.session.add(user)
         db.session.commit()
         user = User.load_user(str(id))
-        refresh_token, token = generate_tokens(user["id"])
-        return make_response(jsonify({'user': user, 'refresh_token': refresh_token, 'token': token}), 201)
+        return make_response(jsonify({}), 201)
         # return make_response(jsonify(user), 201)
     except Exception as err:
         app.logger.info('Err', err)
