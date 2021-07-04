@@ -8,7 +8,6 @@ import uuid
 
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
-@login_required
 def create_product():
     id = uuid.uuid4()
     product = Product(
@@ -28,7 +27,6 @@ def create_product():
 
 
 @app.route('/catalogue/add-many-products', methods=['POST'])
-@login_required
 def create_products():
     products = []
     for row in request.json:
