@@ -69,3 +69,18 @@ def delete_product(productId):
     db.session.delete(product)
     db.session.commit()
     return make_response(jsonify(product.serialize()), 200)
+
+@app.route('/catalogue/edit-product/<productId>', methods=['PUT'])
+def edit_product(productId):
+    product = Product.query.get(productId)
+
+    if request.json['name']:   product.name =  request.json['name']
+    if request.json['brand']:  product.brand = request.json['brand']
+    if request.json['os']:     product.os = request.json['os']
+    if request.json['color']:  product.color = request.json['color']
+    if request.json['inches']: product.inches = request.json['inches']
+    if request.json['price']:  product.price = request.json['price']
+    
+    db.session.commit()
+
+    return make_response(jsonify(product.serialize()), 200)
