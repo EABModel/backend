@@ -78,7 +78,7 @@ def set_shop_id():
         raise ClientError(f"user does not exist", status_code=404)
     user.shopId = request.json['shopId']
     db.session.commit()
-    return make_response(jsonify(user.serialize()), 202)
+    return make_response(jsonify({}), 202)
 
 
 @app.route('/user/<userId>', methods=['DELETE'])
