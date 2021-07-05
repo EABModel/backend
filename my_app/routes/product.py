@@ -19,7 +19,8 @@ def create_product():
         os=request.json['os'],
         color=request.json['color'],
         inches=request.json['inches'],
-        price=request.json['price']
+        price=request.json['price'],
+        image=request.json['image']
     )
     db.session.add(product)
     db.session.commit()
