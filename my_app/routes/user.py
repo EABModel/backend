@@ -39,7 +39,7 @@ def set_shop_id():
         user = User.query.filter_by(id=request.json['userId']).first()
         user.shopId = request.json['shopId']
         db.session.commit()
-        return make_response(jsonify(user.serialize()), 202)
+        return make_response(jsonify({}), 202)
     except Exception as err:
         app.logger.info('Err', err)
         raise err
