@@ -54,6 +54,6 @@ login_manager = LoginManager(app)
 salt = Fernet.generate_key()
 fernet = Fernet(salt)
 
-cors = CORS(app, resources={r"/*": {"origins": "*"}},)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 from .routes import *  # nopep8
