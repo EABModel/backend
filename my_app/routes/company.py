@@ -3,7 +3,7 @@ from flask import jsonify, request, make_response, Response
 from ..models.shop import Shop
 from ..models.company import Company
 from .user import build_user
-from ..utils.errors import ClientError, SchemaValidationError, error_handling
+from ..utils.errors import ClientError, error_handling
 from ..utils.validation import validate_request
 import uuid
 
@@ -22,7 +22,6 @@ create_company_schema = {
 @app.route('/company/create', methods=['POST'])
 @error_handling('create company')
 def create_company():
-    # try:
     validate_request(request.json, create_company_schema)
     # Create Company
     company_id = uuid.uuid4()
@@ -48,7 +47,7 @@ def create_company():
     return make_response(jsonify(company), 201)
 
 
-create_company_login = {
+company_login_schema = {
     "type": "object",
     "properties": {
         "name": {"type": "string"},
@@ -61,10 +60,10 @@ create_company_login = {
 @app.route('/company/login', methods=['POST'])
 @error_handling('login company')
 def login_company():
-    validate_request(request.json, create_company_schema)
+    validate_request(request.json, company_login_schema)
     company = Company.load_company_by_name(request.json['name'])
     if not company:
-        raise ClientError('Company not found', status_code=404)
+        raise ClientError("Company does not exist", status_code=404)
 
     check_password = bcrypt.check_password_hash(
         company.password, request.json["password"])
@@ -85,8 +84,7 @@ def login_company():
 def get_company(companyId):
     company = Company.query.filter_by(id=companyId).first()
     if not company:
-        raise ClientError(
-            f"Company does not exist", status_code=404)
+        raise ClientError("Company does not exist", status_code=404)
     shops = company.shops
     return make_response(jsonify({'shops': [i.serialize() for i in shops]}))
 
@@ -96,7 +94,6 @@ def get_company(companyId):
 def get_users(companyId):
     company = Company.query.filter_by(id=companyId).first()
     if not company:
-        raise ClientError(
-            f"Company does not exist", status_code=404)
+        raise ClientError("Company does not exist", status_code=404)
     users = company.users
     return make_response(jsonify({'users': [i.serialize() for i in users]}))
