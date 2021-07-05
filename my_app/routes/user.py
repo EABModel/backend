@@ -45,7 +45,7 @@ create_user_schema = {
 def create_user():
     validate_request(request.json, create_user_schema)
     hashed_password = bcrypt.generate_password_hash(
-        request.json['password'].encode('utf-8'))
+        request.json['password']).decode('utf-8')
     user = build_user(
         username=request.json['username'],
         email=request.json['email'],
@@ -55,9 +55,8 @@ def create_user():
         sessionType='EMPLOYEE'
     )
     db.session.commit()
-    user = User.load_user(user.id)
-    refresh_token, token = generate_tokens(user["id"])
-    return make_response(jsonify({'user': user, 'refresh_token': refresh_token, 'token': token}), 201)
+
+    return make_response(jsonify({}), 201)
 
 
 set_shop_id_schema = {
