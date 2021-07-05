@@ -42,7 +42,8 @@ def create_products():
             os=row['os'],
             color=row['color'],
             inches=row['inches'],
-            price=row['price']
+            price=row['price'],
+            image=request.json['image']
         )
         products.append(product)
         db.session.add_all(products)
