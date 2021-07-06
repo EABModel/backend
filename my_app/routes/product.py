@@ -144,7 +144,7 @@ def edit_product(productId):
 
     if request.json['brand']:  product.brand = request.json['brand']
     if request.json['color']:  product.color = request.json['color']
-    if request.json['image']:  product.price = request.json['image']
+    if request.json['image']:  product.image = request.json['image']
     if request.json['inches']: product.inches = request.json['inches']
     if request.json['name']:   product.name =  request.json['name']
     if request.json['os']:     product.os = request.json['os']
