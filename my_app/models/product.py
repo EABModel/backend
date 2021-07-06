@@ -5,14 +5,15 @@ class Product(db.Model):
     __tablename__ = 'product'
 
     id = db.Column(db.String(150), primary_key=True)
-    shopId = db.Column(db.String(150), db.ForeignKey('shop.id'), nullable=False)
+    shopId = db.Column(db.String(150), db.ForeignKey(
+        'shop.id'), nullable=False)
     name = db.Column(db.String(40), nullable=False)
     brand = db.Column(db.String(80), nullable=False)
     os = db.Column(db.String(300), nullable=False)
     color = db.Column(db.String(20), nullable=False)
     inches = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    image = db.Column(db.String(1000), nullable=False)
+    image = db.Column(db.Text, nullable=False)
 
     def serialize(self):
         return {
@@ -33,7 +34,8 @@ class Product(db.Model):
 
     @staticmethod
     def load_shops_products(shopId):
-        unserialized_products = Product.query.filter_by(shopId=str(shopId)).all()
+        unserialized_products = Product.query.filter_by(
+            shopId=str(shopId)).all()
         return [product.serialize() for product in unserialized_products]
 
     def __repr__(self):

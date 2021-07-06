@@ -13,13 +13,14 @@ create_product_schema = {
     "properties": {
         "brand": {"type": "string"},
         "color": {"type": "string"},
+        "image": {"type": "string"},
         "inches": {"type": "integer"},
         "name": {"type": "string"},
         "os": {"type": "string"},
         "price": {"type": "integer"},
         "shopId": {"type": "string"},
     },
-    "required": ["brand", "color", "email", "inches", "name", "os", "price", "shopId"]
+    "required": ["brand", "color", "email", "image", "inches", "name", "os", "price", "shopId"]
 }
 
 
