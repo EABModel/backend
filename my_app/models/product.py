@@ -12,7 +12,7 @@ class Product(db.Model):
     color = db.Column(db.String(20), nullable=False)
     inches = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    image = db.Column(db.String(150), nullable=False)
+    image = db.Column(db.String(1000), nullable=False)
 
     def serialize(self):
         return {
