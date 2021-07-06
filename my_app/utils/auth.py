@@ -11,7 +11,7 @@ import uuid
 def generate_jwt(user_id):
     return jwt.encode({
         "user_id": user_id,
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=300)
     }, app.config['SECRET_KEY'], algorithm="HS256")
 
 

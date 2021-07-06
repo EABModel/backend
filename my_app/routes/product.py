@@ -20,7 +20,7 @@ create_product_schema = {
         "price": {"type": "integer"},
         "shopId": {"type": "string"},
     },
-    "required": ["brand", "color", "email", "image", "inches", "name", "os", "price", "shopId"]
+    "required": ["brand", "color", "image", "inches", "name", "os", "price", "shopId"]
 }
 
 
@@ -55,7 +55,7 @@ create_products_schema = {
 
 @app.route('/catalogue/add-many-products', methods=['POST'])
 @login_required
-@error_handling('delete product')
+@error_handling('create products')
 def create_products():
     validate_request(request.json, create_products_schema)
     products = []
@@ -70,7 +70,7 @@ def create_products():
             color=row['color'],
             inches=row['inches'],
             price=row['price'],
-            image=request.json['image']
+            image=row['image']
         )
         products.append(product)
     db.session.add_all(products)
@@ -96,11 +96,19 @@ def get_product(productId):
     return make_response(jsonify(product), 200)
 
 
+@app.route('/catalogue/shop/', methods=['GET'])
+@error_handling('get empty catalogue')
+def get_empty_catalog():
+    raise ClientError("You are not in a shop", status_code=404)
+
+
 @app.route('/catalogue/shop/<shopId>', methods=['GET'])
-@cache.cached(timeout=50)
+@error_handling('get catalogue')
 def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
-    return make_response(jsonify(products), 200)
+    if products:
+        return make_response(jsonify(products), 200)
+    raise ClientError("You haven't created products", status_code=404)
 
 
 @app.route('/catalogue/delete-product/<productId>', methods=['DELETE'])
