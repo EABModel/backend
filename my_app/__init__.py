@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
@@ -17,6 +18,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 FlaskUUID(app)
 
+# app.config.update(
+#     SESSION_COOKIE_HTTPONLY=True,
+#     REMEMBER_COOKIE_HTTPONLY=True,
+#     SESSION_COOKIE_SAMESITE="Lax",
+# )
 
 # _______________________________________________________________________________
 # Database config
@@ -45,7 +51,9 @@ mail = Mail(app)
 # Others
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+salt = Fernet.generate_key()
+fernet = Fernet(salt)
 
-cors = CORS(app, resources={r"/*": {"origins": "*"}},)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 from .routes import *  # nopep8
