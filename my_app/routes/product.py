@@ -59,7 +59,9 @@ create_products_schema = {
 def create_products():
     validate_request(request.json, create_products_schema)
     products = []
+    shopId = None
     for row in request.json:
+        if not shopId: shopId = row['shopId']
         id = uuid.uuid4()
         product = Product(
             id=id,
@@ -75,7 +77,8 @@ def create_products():
         products.append(product)
     db.session.add_all(products)
     db.session.commit()
-    return make_response(jsonify({}), 201)
+    products = Product.load_shops_products(shopId)
+    return make_response(jsonify(products), 201)
 
 
 @app.route('/catalogue', methods=['GET'])
@@ -119,4 +122,37 @@ def delete_product(productId):
         raise ClientError("Product does not exist", status_code=404)
     db.session.delete(product)
     db.session.commit()
+    return make_response(jsonify(product.serialize()), 200)
+
+
+edit_product_schema = {
+    "type": "object",
+    "properties": {
+        "brand": {"type": "string"},
+        "color": {"type": "string"},
+        "image": {"type": "string"},
+        "inches": {"type": "integer"},
+        "name": {"type": "string"},
+        "os": {"type": "string"},
+        "price": {"type": "integer"},
+    },
+}
+
+
+@app.route('/catalogue/edit-product/<productId>', methods=['PUT'])
+@error_handling('edit product')
+def edit_product(productId):
+    validate_request(request.json, edit_product_schema)
+    product = Product.query.get(productId)
+
+    if request.json['brand']:  product.brand = request.json['brand']
+    if request.json['color']:  product.color = request.json['color']
+    if request.json['image']:  product.image = request.json['image']
+    if request.json['inches']: product.inches = request.json['inches']
+    if request.json['name']:   product.name =  request.json['name']
+    if request.json['os']:     product.os = request.json['os']
+    if request.json['price']:  product.price = request.json['price']
+    
+    db.session.commit()
+
     return make_response(jsonify(product.serialize()), 200)
