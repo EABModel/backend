@@ -12,6 +12,7 @@ class Product(db.Model):
     color = db.Column(db.String(20), nullable=False)
     inches = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(1000), nullable=False)
 
     def serialize(self):
         return {
@@ -22,7 +23,8 @@ class Product(db.Model):
             "os": self.os,
             "color": self.color,
             "inches": self.inches,
-            "price": self.price
+            "price": self.price,
+            "image": self.image
         }
 
     @staticmethod
