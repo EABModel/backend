@@ -11,9 +11,9 @@ create_shop_schema = {
     "properties": {
         "location": {"type": "string"},
         "name": {"type": "string"},
-        "password": {"type": "string"},
+        "companyId": {"type": "string"},
     },
-    "required": ["location", "name", "password"]
+    "required": ["location", "name", "companyId"]
 }
 
 
