@@ -3,13 +3,31 @@ from my_app import app, db, cache
 from flask import jsonify, request, make_response, session, g
 from ..models.product import Product
 from ..utils.auth import login_required
-from ..utils.errors import ClientError
+from ..utils.errors import ClientError, error_handling
+from ..utils.validation import validate_request
 import uuid
+
+
+create_product_schema = {
+    "type": "object",
+    "properties": {
+        "brand": {"type": "string"},
+        "color": {"type": "string"},
+        "inches": {"type": "integer"},
+        "name": {"type": "string"},
+        "os": {"type": "string"},
+        "price": {"type": "integer"},
+        "shopId": {"type": "string"},
+    },
+    "required": ["brand", "color", "email", "inches", "name", "os", "price", "shopId"]
+}
 
 
 @app.route('/catalogue/add-single-product', methods=['POST'])
 @login_required
+@error_handling('create product')
 def create_product():
+    validate_request(request.json, create_product_schema)
     id = uuid.uuid4()
     product = Product(
         id=id,
@@ -28,9 +46,17 @@ def create_product():
     return make_response(jsonify(product), 201)
 
 
+create_products_schema = {
+    "type": "array",
+    "items": create_product_schema
+}
+
+
 @app.route('/catalogue/add-many-products', methods=['POST'])
 @login_required
+@error_handling('delete product')
 def create_products():
+    validate_request(request.json, create_products_schema)
     products = []
     for row in request.json:
         id = uuid.uuid4()
@@ -46,8 +72,8 @@ def create_products():
             image=request.json['image']
         )
         products.append(product)
-        db.session.add_all(products)
-        db.session.commit()
+    db.session.add_all(products)
+    db.session.commit()
     return make_response(jsonify({}), 201)
 
 
@@ -61,8 +87,11 @@ def get_catalogue():
 
 
 @app.route('/catalogue/<productId>', methods=['GET'])
+@error_handling('get product')
 def get_product(productId):
     product = Product.load_product(productId)
+    if not product:
+        raise ClientError("Product does not exist", status_code=404)
     return make_response(jsonify(product), 200)
 
 
@@ -72,9 +101,13 @@ def get_catalog(shopId):
     products = Product.load_shops_products(shopId)
     return make_response(jsonify(products), 200)
 
+
 @app.route('/catalogue/delete-product/<productId>', methods=['DELETE'])
+@error_handling('delete product')
 def delete_product(productId):
     product = Product.query.get(productId)
+    if not product:
+        raise ClientError("Product does not exist", status_code=404)
     db.session.delete(product)
     db.session.commit()
     return make_response(jsonify(product.serialize()), 200)
