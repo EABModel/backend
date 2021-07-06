@@ -59,7 +59,9 @@ create_products_schema = {
 def create_products():
     validate_request(request.json, create_products_schema)
     products = []
+    shopId = None
     for row in request.json:
+        if not shopId: shopId = row['shopId']
         id = uuid.uuid4()
         product = Product(
             id=id,
@@ -75,7 +77,8 @@ def create_products():
         products.append(product)
     db.session.add_all(products)
     db.session.commit()
-    return make_response(jsonify({}), 201)
+    products = Product.load_shops_products(shopId)
+    return make_response(jsonify(products), 201)
 
 
 @app.route('/catalogue', methods=['GET'])
